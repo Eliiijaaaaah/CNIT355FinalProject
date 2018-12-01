@@ -16,5 +16,6 @@ This application is made up of three different intents. One intent, LiveDataActi
 ### How it Works
 
 ### Licensing and Acknowledgements
-
+The NOMICS API belongs to NOMICS.
 ### About Software
+Software Version v1.0.0 of [TBD]
