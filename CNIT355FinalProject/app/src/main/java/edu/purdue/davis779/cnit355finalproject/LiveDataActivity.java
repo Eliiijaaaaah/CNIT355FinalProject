@@ -22,15 +22,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LiveDataActivity extends AppCompatActivity implements Runnable {
-    String[] Coins = {"BTC", "BCH", "LTC"};
-    String[] Exchanges = {"Coinbase", "Kraken"};
-    ArrayList<Double> Prices = new ArrayList<Double>();
+    String[] Coins = {"BTC", "LTC", "ETH"};
+    ArrayList<String> percentGain = new ArrayList<>();
+    TableLayout liveDataTable;
+    View tr;
+    String percentString;
     String coin;
     String price;
     Thread thread;
-    Context context;
     String msg;
 
     private static LiveDataActivity parent;
@@ -40,30 +42,14 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_data);
         parent = this;
-    }
-
-    private double getArbitragePotential(String Coin){
-        double percentage = 0;
-
-        return percentage;
+        getExchangeCoinPrice();
     }
 
     //api key: 1c5ffff4fc72b2138210c4a9ea578dc4
     //api markets/prices: https://api.nomics.com/v1/markets/prices?key=1c5ffff4fc72b2138210c4a9ea578dc4&currency=BTC
-    public void getExchangeCoinPrice(View view){
+    public void getExchangeCoinPrice(){
         thread = new Thread(this);
         thread.start();
-    }
-
-    private void getHighPrice(JSONArray coinData){
-        for (int count = 0; count < coinData.length(); count++){
-            try{
-                coinData.getJSONObject(0).getString("price");
-            }
-            catch(Exception e){
-
-            }
-        }
     }
 
     private View.OnClickListener historicDataButton = new View.OnClickListener() {
@@ -73,39 +59,41 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
         }
     };
 
-    private void inflateLiveDataTable(){
+    private void inflateLiveDataTable(int count){
         //This section will populate the live data table
-        parent.runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(parent.getBaseContext(), "hit", Toast.LENGTH_LONG).show();
+            //Toast.makeText(parent.getBaseContext(), "hit", Toast.LENGTH_LONG).show();
 
-                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-                View tr = inflater.inflate(R.layout.row, null);
-                TableLayout liveDataTable = findViewById(R.id.coinTable);
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            tr = inflater.inflate(R.layout.row, null);
+            liveDataTable = findViewById(R.id.coinTable);
 
-                TextView coinNameText = tr.findViewById(R.id.coinNameText);
-                coinNameText.setText(coin);
+            TextView coinNameText = tr.findViewById(R.id.coinNameText);
+            coinNameText.setText(coin);
 
-                TextView coinPriceText = tr.findViewById(R.id.coinPriceText);
-                coinPriceText.setText(price);
+            TextView coinPriceText = tr.findViewById(R.id.coinPriceText);
+            //String percent = Integer.toString(percentGain.size());
+            //Toast.makeText(parent.getBaseContext(), percent, Toast.LENGTH_LONG).show();
+            coinPriceText.setText(percentGain.get(count));
 
-                Button button = tr.findViewById(R.id.button2);
-                button.setOnClickListener(historicDataButton);
+            Button button = tr.findViewById(R.id.button2);
+            button.setOnClickListener(historicDataButton);
 
-                liveDataTable.addView(tr);
-            }
-        });
+            //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
+            parent.runOnUiThread(new Runnable() {
+                public void run() {
+                    liveDataTable.addView(tr);
+                }
+            });
     }
 
     //Reference: https://stackoverflow.com/questions/3505930/make-an-http-request-with-android
     //Gets JSON object of cryptocurrency data
     public void run() {
-
-
         HttpURLConnection urlConnection = null;
         URL url = null;
         JSONArray object = null;
         InputStream inStream = null;
+        int counter = 0;
 
         for (String Coin : Coins){
             try {
@@ -123,18 +111,25 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                 }
                 object = (JSONArray) new JSONTokener(response).nextValue();
 
-                //Loop through object to get each exchange
-                //Then send that data to the price array
-                //Then send to FindHigh and Low
-
                 coin = Coin;
-                price = object.getJSONObject(0).getString("price");
-                inflateLiveDataTable();
+                ArrayList<Double> Prices = new ArrayList<Double>();
+
+                for (int count = 0; count < object.length(); count++){
+                    price = object.getJSONObject(count).getString("price");
+                    Prices.add(Double.parseDouble(price));
+                }
+
+                double min = Collections.min(Prices).doubleValue();
+                double max = Collections.max(Prices).doubleValue();
+                percentString = Double.toString(max/min).toString();
+                percentGain.add(percentString);
+
+                msg = Integer.toString(percentGain.size());
 
                 //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
                 parent.runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(parent.getBaseContext(), coin + ": " + price, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
@@ -147,6 +142,7 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                     }
                 });
             } finally {
+                inflateLiveDataTable(counter);
                 if (inStream != null) {
                     try {
                         // this will close the bReader as well
@@ -158,6 +154,7 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                     urlConnection.disconnect();
                 }
             }
+            counter++;
         }
     }
 }
