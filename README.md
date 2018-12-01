@@ -8,7 +8,7 @@
   
   Elijah Davis - davis779@purdue.edu   
 ### How to Install and Configure
-   Find and Install the application through the Google Play application store, found using the application name [TBD]
+   Find and Install the application through the Google Play application store, found using the application name TRE Cryptocurrency Arbiter.
 ### How to Run and Use
    On application start-up, the user will be presented with live data for the crytpocurrencies currently available for analysis through the application. The user can then select a currency for a more in-depth evaluation, which includes a graph of it's historical prices over a set period, as well as the minimum price, minimum exchange rate, maximum price, and maximum exchange rate reached by that currency. On this page, the user will have access to two labeled buttons, which can return the user to the live data view or update the in-depth analysis. The user can also access an information page through pressing the Info button on the Live Data view, which will explain the purpose of the application, introduce the creators, and show a basic disclaimer denying responsibility for unsuccessful decisions made using our application.
 ### Design Decisions
@@ -16,6 +16,6 @@ This application is made up of three different intents. One intent, LiveDataActi
 ### How it Works
 
 ### Licensing and Acknowledgements
-The NOMICS API belongs to NOMICS.
+The NOMICS API belongs to NOMICS. The graphing is done using GraphView Library, which belongs to Jonas Gehring and is published under the Apache v2 license.
 ### About Software
-Software Version v1.0.0 of [TBD]
+Software Version v1.0.0 of TRE Cryptocurrency Arbiter
