@@ -49,7 +49,14 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
 
     //api key: 1c5ffff4fc72b2138210c4a9ea578dc4
     //api markets/prices: https://api.nomics.com/v1/markets/prices?key=1c5ffff4fc72b2138210c4a9ea578dc4&currency=
-    public void getExchangeCoinPrice(){
+    private void getExchangeCoinPrice(){
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    public void getExchangeCoinPrice(View view){
+        if (liveDataTable != null)
+            liveDataTable.removeAllViews();
         thread = new Thread(this);
         thread.start();
     }
@@ -64,6 +71,11 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
             startActivityForResult(intent, 1);
         }
     };
+
+    public void openInfoActivity(View view){
+        Intent intent = new Intent(parent, InfoActivity.class);
+        startActivity(intent);
+    }
 
     private void inflateLiveDataTable(int count){
         //This section will populate the live data table
@@ -89,7 +101,12 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
             //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
             parent.runOnUiThread(new Runnable() {
                 public void run() {
-                    liveDataTable.addView(tr);
+                    try{
+                        liveDataTable.addView(tr);
+                    }
+                    catch (Exception e){
+
+                    }
                 }
             });
     }
@@ -129,7 +146,8 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
 
                 double min = Collections.min(Prices).doubleValue();
                 double max = Collections.max(Prices).doubleValue();
-                percentString = Double.toString(max/min).toString();
+                //percentString = Double.toString(max/min).toString()
+                percentString = String.format("%.2f", (max/min-1)*100);
                 percentGain.add(percentString);
 
                 msg = Integer.toString(percentGain.size());

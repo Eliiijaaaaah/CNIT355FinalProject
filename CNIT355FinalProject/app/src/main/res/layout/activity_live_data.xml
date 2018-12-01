@@ -7,7 +7,7 @@
     tools:context=".LiveDataActivity">
 
     <Button
-        android:id="@+id/btnLive"
+        android:id="@+id/btnRefresh"
         android:layout_width="135dp"
         android:layout_height="55dp"
         android:layout_marginBottom="512dp"
@@ -15,8 +15,8 @@
         android:layout_marginStart="29dp"
         android:layout_marginTop="30dp"
         android:background="#8bcae1"
-        android:onClick="onDataClick"
-        android:text="Live Data"
+        android:onClick="getExchangeCoinPrice"
+        android:text="Refresh"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,12 +31,33 @@
         android:layout_marginStart="240dp"
         android:layout_marginTop="30dp"
 
-        android:onClick="onInfoClick"
+        android:onClick="openInfoActivity"
         android:text="Info "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/coinColumnLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Coin"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/svPotential"
+        app:layout_constraintStart_toStartOf="@+id/btnRefresh" />
+
+    <TextView
+        android:id="@+id/returnColumnLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:text="% ROI"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/coinColumnLable"
+        app:layout_constraintTop_toBottomOf="@+id/btnRefresh" />
 
     <ScrollView
         android:id="@+id/svPotential"
@@ -45,12 +66,12 @@
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="8dp"
         android:scrollbarStyle="insideInset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/returnColumnLable">
 
         <TableLayout
             android:id="@+id/coinTable"
