@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -20,10 +21,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class LiveDataActivity extends AppCompatActivity implements Runnable {
     String[] Coins = {"BTC", "BCH", "LTC"};
     String[] Exchanges = {"Coinbase", "Kraken"};
+    ArrayList<Double> Prices = new ArrayList<Double>();
     String coin;
     String price;
     Thread thread;
@@ -66,7 +69,7 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
     private View.OnClickListener historicDataButton = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            //TODO: Intent for HistoricDataActivity
         }
     };
 
@@ -119,6 +122,10 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                     response += temp;
                 }
                 object = (JSONArray) new JSONTokener(response).nextValue();
+
+                //Loop through object to get each exchange
+                //Then send that data to the price array
+                //Then send to FindHigh and Low
 
                 coin = Coin;
                 price = object.getJSONObject(0).getString("price");
