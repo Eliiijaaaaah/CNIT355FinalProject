@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ import java.net.URL;
 public class LiveDataActivity extends AppCompatActivity implements Runnable {
     String[] Coins = {"BTC", "BCH", "LTC"};
     String[] Exchanges = {"Coinbase", "Kraken"};
+    String coin;
+    String price;
     Thread thread;
     Context context;
     String msg;
@@ -60,8 +63,35 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
         }
     }
 
-    private void inflateLiveDataTable(String price){
+    private View.OnClickListener historicDataButton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
+        }
+    };
+
+    private void inflateLiveDataTable(){
+        //This section will populate the live data table
+        parent.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(parent.getBaseContext(), "hit", Toast.LENGTH_LONG).show();
+
+                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+                View tr = inflater.inflate(R.layout.row, null);
+                TableLayout liveDataTable = findViewById(R.id.coinTable);
+
+                TextView coinNameText = tr.findViewById(R.id.coinNameText);
+                coinNameText.setText(coin);
+
+                TextView coinPriceText = tr.findViewById(R.id.coinPriceText);
+                coinPriceText.setText(price);
+
+                Button button = tr.findViewById(R.id.button2);
+                button.setOnClickListener(historicDataButton);
+
+                liveDataTable.addView(tr);
+            }
+        });
     }
 
     //Reference: https://stackoverflow.com/questions/3505930/make-an-http-request-with-android
@@ -90,25 +120,14 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                 }
                 object = (JSONArray) new JSONTokener(response).nextValue();
 
-                //This section will populate the live data table
-                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-                View tr = inflater.inflate(R.layout.row, null);
-                TableLayout liveDataTable = findViewById(R.id.coinTable);
-
-                TextView coinNameText = tr.findViewById(R.id.coinNameText);
-                coinNameText.setText(Coin);
-
-                TextView coinPriceText = tr.findViewById(R.id.coinPriceText);
-                coinPriceText.setText(object.getJSONObject(0).getString("price"));
-
-                liveDataTable.addView(tr);
-
-                msg = object.getJSONObject(0).getString("price");
+                coin = Coin;
+                price = object.getJSONObject(0).getString("price");
+                inflateLiveDataTable();
 
                 //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
                 parent.runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(parent.getBaseContext(), coin + ": " + price, Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
