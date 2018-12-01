@@ -12,4 +12,6 @@
 ### How to Run and Use
 ### Design Decisions
 ### How it Works
+### Licensing and Acknowledgements
 
+### About Software
