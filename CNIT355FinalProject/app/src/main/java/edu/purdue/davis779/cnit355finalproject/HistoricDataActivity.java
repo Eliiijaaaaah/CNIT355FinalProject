@@ -1,7 +1,9 @@
 package edu.purdue.davis779.cnit355finalproject;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -13,6 +15,12 @@ public class HistoricDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historic_data);
+
+        Intent intent = getIntent();
+        String coin = intent.getExtras().getString("Coin");
+
+        TextView coinName = findViewById(R.id.txtCur);
+        coinName.setText(coin);
 
         GraphView  graph = (GraphView) findViewById(R.id.graph);
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
