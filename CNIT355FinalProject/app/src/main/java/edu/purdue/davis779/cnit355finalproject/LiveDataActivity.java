@@ -91,24 +91,26 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
             TextView coinPriceText = tr.findViewById(R.id.coinPriceText);
             //String percent = Integer.toString(percentGain.size());
             //Toast.makeText(parent.getBaseContext(), percent, Toast.LENGTH_LONG).show();
-            coinPriceText.setText(percentGain.get(count));
 
-            Button button = tr.findViewById(R.id.button2);
-            button.setOnClickListener(historicDataButton);
+            if (percentGain.size() > count) {
+                coinPriceText.setText(percentGain.get(count));
 
-            button.setTag(coin);
+                Button button = tr.findViewById(R.id.button2);
+                button.setOnClickListener(historicDataButton);
 
-            //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
-            parent.runOnUiThread(new Runnable() {
-                public void run() {
-                    try{
-                        liveDataTable.addView(tr);
+                button.setTag(coin);
+
+                //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
+                parent.runOnUiThread(new Runnable() {
+                    public void run() {
+                        try {
+                            liveDataTable.addView(tr);
+                        } catch (Exception e) {
+
+                        }
                     }
-                    catch (Exception e){
-
-                    }
-                }
-            });
+                });
+            }
     }
 
     //Reference: https://stackoverflow.com/questions/3505930/make-an-http-request-with-android
@@ -121,8 +123,9 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
         int counter = 0;
 
         for (String Coin : Coins){
+            coin = Coin;
             try {
-                url = new URL("https://api.nomics.com/v1/markets/prices?key=1c5ffff4fc72b2138210c4a9ea578dc4&currency=" + Coin);
+                url = new URL("https://api.nomics.com/v1/markets/prices?key=1c5ffff4fc72b2138210c4a9ea578dc4&currency=" + coin);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setDoOutput(true);
@@ -136,12 +139,14 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                 }
                 object = (JSONArray) new JSONTokener(response).nextValue();
 
-                coin = Coin;
                 ArrayList<Double> Prices = new ArrayList<Double>();
 
                 for (int count = 0; count < object.length(); count++){
-                    price = object.getJSONObject(count).getString("price");
-                    Prices.add(Double.parseDouble(price));
+                    String currencyConversion = object.getJSONObject(count).getString("quote").toString();
+                    if (currencyConversion.equals("USD")) {
+                        price = object.getJSONObject(count).getString("price");
+                        Prices.add(Double.parseDouble(price));
+                    }
                 }
 
                 double min = Collections.min(Prices).doubleValue();
@@ -150,21 +155,21 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                 percentString = String.format("%.2f", (max/min-1)*100);
                 percentGain.add(percentString);
 
-                msg = Integer.toString(percentGain.size());
+                //msg = Integer.toString(percentGain.size());
 
                 //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
-                parent.runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                //parent.runOnUiThread(new Runnable() {
+                //    public void run() {
+                //        Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+                //    }
+                //});
             } catch (Exception e) {
                 msg = e.getMessage();
 
                 //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
                 parent.runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(parent.getBaseContext(), "Couldn't load coin: " + coin, Toast.LENGTH_LONG).show();
                     }
                 });
             } finally {

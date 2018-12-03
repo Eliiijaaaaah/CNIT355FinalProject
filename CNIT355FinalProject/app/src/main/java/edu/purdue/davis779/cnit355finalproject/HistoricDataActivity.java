@@ -97,10 +97,13 @@ public class HistoricDataActivity extends AppCompatActivity implements Runnable 
             ArrayList<String> Exchanges = new ArrayList<String>();
 
             for (int count = 0; count < object.length(); count++){
-                String price = object.getJSONObject(count).getString("price");
-                String exchange = object.getJSONObject(count).getString("exchange");
-                Prices.add(Double.parseDouble(price));
-                Exchanges.add(exchange);
+                String currencyConversion = object.getJSONObject(count).getString("quote").toString();
+                if (currencyConversion.equals("USD")) {
+                    String price = object.getJSONObject(count).getString("price");
+                    String exchange = object.getJSONObject(count).getString("exchange");
+                    Prices.add(Double.parseDouble(price));
+                    Exchanges.add(exchange);
+                }
             }
 
             double min = Collections.min(Prices).doubleValue();
