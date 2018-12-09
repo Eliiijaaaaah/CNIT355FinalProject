@@ -198,6 +198,7 @@ public class HistoricDataActivity extends AppCompatActivity implements Runnable 
                 datapoints[count] = new DataPoint(count, dPrice);
             }
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(datapoints);
+            graph.removeAllSeries();
             graph.addSeries(series);
 
             for (int count = 0; count < object.length(); count++){
@@ -207,7 +208,6 @@ public class HistoricDataActivity extends AppCompatActivity implements Runnable 
             }
 
             series = new LineGraphSeries<>(datapoints);
-            graph.removeAllSeries();
             graph.addSeries(series);
 
             msg = start;
