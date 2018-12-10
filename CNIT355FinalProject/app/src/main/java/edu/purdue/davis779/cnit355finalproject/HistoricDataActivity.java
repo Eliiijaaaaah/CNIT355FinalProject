@@ -57,8 +57,10 @@ public class HistoricDataActivity extends AppCompatActivity implements Runnable 
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                size = progress*-1;
-                refresh();
+                if (!thread.isAlive()){
+                    size = progress*-1;
+                    refresh();
+                }
             }
 
             @Override
@@ -204,18 +206,13 @@ public class HistoricDataActivity extends AppCompatActivity implements Runnable 
             for (int count = 0; count < object.length(); count++){
                 String high = object.getJSONObject(count).getString("high").toString();
                 Double dPrice = Double.parseDouble(high);
+                if (dPrice == null)
+                    dPrice = 0.0;
                 datapoints[count] = new DataPoint(count, dPrice);
             }
 
             series = new LineGraphSeries<>(datapoints);
             graph.addSeries(series);
-
-            msg = start;
-            parent.runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(parent.getBaseContext(), msg, Toast.LENGTH_LONG).show();
-                }
-            });
         } catch (Exception e) {
             msg = e.getMessage();
 

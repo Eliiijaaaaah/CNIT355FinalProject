@@ -43,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginStart="72dp"
         android:text="Coin"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/svPotential"
@@ -52,12 +53,12 @@
         android:id="@+id/returnColumnLable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="76dp"
         android:text="% ROI"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/coinColumnLable"
-        app:layout_constraintTop_toBottomOf="@+id/btnRefresh" />
+        app:layout_constraintBottom_toTopOf="@+id/svPotential"
+        app:layout_constraintStart_toEndOf="@+id/coinColumnLable" />
 
     <ScrollView
         android:id="@+id/svPotential"
@@ -66,12 +67,14 @@
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="60dp"
         android:scrollbarStyle="insideInset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/returnColumnLable">
+        app:layout_constraintTop_toBottomOf="@+id/liveDataTitle"
+        app:layout_constraintVertical_bias="1.0">
 
         <TableLayout
             android:id="@+id/coinTable"
@@ -80,5 +83,17 @@
 
         </TableLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/liveDataTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="19dp"
+        android:layout_marginTop="8dp"
+        android:text="Live Arbitrage Data"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/btnInfo"
+        app:layout_constraintTop_toBottomOf="@+id/btnRefresh" />
 
 </android.support.constraint.ConstraintLayout>

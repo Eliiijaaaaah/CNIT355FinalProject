@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class LiveDataActivity extends AppCompatActivity implements Runnable {
-    String[] Coins = {"BTC", "LTC", "ETH", "1ST"};
+    String[] Coins = {"BTC", "LTC", "ETH", "BCH", "XMR"};
     ArrayList<String> percentGain = new ArrayList<>();
     TableLayout liveDataTable;
     View tr;
@@ -141,12 +141,20 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
 
                 ArrayList<Double> Prices = new ArrayList<Double>();
 
-                for (int count = 0; count < object.length(); count++){
+                //Cleans data retrieved
+                for (int count = 0; count < object.length(); count++) {
                     String currencyConversion = object.getJSONObject(count).getString("quote").toString();
-                    if (currencyConversion.equals("USD")) {
-                        price = object.getJSONObject(count).getString("price");
-                        Prices.add(Double.parseDouble(price));
+                    if (!currencyConversion.equals("USD")) {
+                        object.remove(count);
                     }
+                }
+
+                //Adds data to price array
+                for (int count = 0; count < object.length(); count++){
+                    price = object.getJSONObject(count).getString("price");
+                    double dPrice = Double.parseDouble(price);
+                    if (dPrice > 0)
+                        Prices.add(dPrice);
                 }
 
                 double min = Collections.min(Prices).doubleValue();
@@ -169,7 +177,7 @@ public class LiveDataActivity extends AppCompatActivity implements Runnable {
                 //Reference: https://stackoverflow.com/questions/17379002/java-lang-runtimeexception-cant-create-handler-inside-thread-that-has-not-call
                 parent.runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(parent.getBaseContext(), "Couldn't load coin: " + coin, Toast.LENGTH_LONG).show();
+                        Toast.makeText(parent.getBaseContext(), "Error on " + coin + ": " + msg, Toast.LENGTH_SHORT).show();
                     }
                 });
             } finally {
